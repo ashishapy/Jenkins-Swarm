@@ -26,9 +26,17 @@ RUN mkdir /var/log/jenkins \
 	# TODO: use ARG for group name, instead of hardcoding group name
 	&& adduser jenkins docker
 
+# Docker entrypoint script
+COPY scripts/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Change to jenkins user
 USER jenkins
 
 # Set default options
 ENV JAVA_OPTS="-Djava.util.logging.config.file=/var/jenkins_home/log.properties"
 ENV JENKINS_OPTS="--logfile=/var/log/jenkins/jenkins.log --webroot=/var/cache/jenkins/war"
+
+# Run docker and jenkins entrypoint scripts
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
