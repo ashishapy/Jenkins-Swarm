@@ -1,5 +1,7 @@
 login:
 	@docker login
+network:
+	@docker network create --driver overlay jenkins-ci
 run:
 	@docker service create --name jenkins-master \
 	-e JENKINS_OPTS="--prefix=/jenkins" \
@@ -10,8 +12,7 @@ run:
 	--network jenkins-ci \
 	--reserve-memory 300m \
 	-p 8080:8080 -p 50000:50000 \
-	jenkins:2.32.1-alpine
-
+	ashishapy/jenkins-swarm-master
 remove:
 	@docker service rm jenkins-master
 clean-images:
